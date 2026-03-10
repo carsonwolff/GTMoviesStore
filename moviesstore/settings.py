@@ -41,10 +41,7 @@ INSTALLED_APPS = [
     'movies',
     'accounts',
     'cart',
-    'star_ratings',
 ]
-
-STAR_RATINGS_LOGIN_REQUIRED = True
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
