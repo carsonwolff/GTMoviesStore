@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load static %}
+{% load ratings %}
 <div class="p-3">
   <div class="container">
     <div class="row mt-3">
@@ -35,6 +36,7 @@
             <a href="{% url 'movies.show' id=movie.id %}" class = "btn bg-dark text-white">
             {{ movie.name }}
             </a>
+            {% ratings movie read_only=True %}
           </div>
         </div>
       </div>
