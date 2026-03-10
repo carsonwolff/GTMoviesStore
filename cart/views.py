@@ -35,9 +35,22 @@ def purchase(request):
         return redirect('cart.index')
     movies_in_cart = Movie.objects.filter(id__in=movie_ids)
     cart_total = calculate_cart_total(cart, movies_in_cart)
+    
+    # Get latitude and longitude from the request (could be from a form or POST data)
+    latitude = request.POST.get('latitude')
+    longitude = request.POST.get('longitude')
+    
     order = Order()
     order.user = request.user
     order.total = cart_total
+    
+    if latitude and longitude:
+        try:
+            order.latitude = float(latitude)
+            order.longitude = float(longitude)
+        except ValueError:
+            pass
+            
     order.save()
     for movie in movies_in_cart:
         item = Item()

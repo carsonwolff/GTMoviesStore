@@ -36,7 +36,12 @@
             <div class="text-end">
                 <a class="btn btn-outline-secondary mb-2"><b>Total to pay:</b> ${{ template_data.cart_total }}</a>
                 {% if template_data.movies_in_cart|length > 0 %}
-                <a href="{% url 'cart.purchase' %}" class="btn bg-dark text-white mb-2">Purchase</a>
+                <form id="purchase-form" action="{% url 'cart.purchase' %}" method="POST" class="d-inline">
+                    {% csrf_token %}
+                    <input type="hidden" name="latitude" id="latitude" value="">
+                    <input type="hidden" name="longitude" id="longitude" value="">
+                    <button type="submit" id="purchase-btn" class="btn bg-dark text-white mb-2">Purchase</button>
+                </form>
                 <a href="{% url 'cart.clear' %}">
                     <button class="btn btn-danger mb-2">
                         Remove all movies from Cart
@@ -47,4 +52,35 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const purchaseBtn = document.getElementById("purchase-btn");
+        const latInput = document.getElementById("latitude");
+        const lngInput = document.getElementById("longitude");
+
+        if (purchaseBtn) {
+            purchaseBtn.addEventListener("click", function(event) {
+                event.preventDefault(); // Stop form submission temporarily
+                
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        function(position) {
+                            latInput.value = position.coords.latitude;
+                            lngInput.value = position.coords.longitude;
+                            document.getElementById("purchase-form").submit();
+                        },
+                        function(error) {
+                            console.warn("Geolocation denied or failed. Submitting without location.");
+                            document.getElementById("purchase-form").submit();
+                        },
+                        { timeout: 5000 }
+                    );
+                } else {
+                    document.getElementById("purchase-form").submit();
+                }
+            });
+        }
+    });
+</script>
 {% endblock content %}
