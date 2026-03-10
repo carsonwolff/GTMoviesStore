@@ -43,7 +43,9 @@ def purchase(request):
     order = Order()
     order.user = request.user
     order.total = cart_total
-    
+
+
+
     if latitude and longitude:
         try:
             order.latitude = float(latitude)
@@ -58,7 +60,11 @@ def purchase(request):
         item.price = movie.price
         item.order = order
         item.quantity = cart[str(movie.id)]
+        order.user.profile.movie_count += int(item.quantity)
         item.save()
+
+    order.user.profile.save()
+
     request.session['cart'] = {}
     template_data = {}
     template_data['title'] = 'Purchase Confirmation'
