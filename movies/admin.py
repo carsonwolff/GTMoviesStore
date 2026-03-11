@@ -39,5 +39,50 @@ class MovieAdmin(admin.ModelAdmin):
         )
         return TemplateResponse(request, 'admin/movie_insights.html', context)
 
+
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ['user', 'movie__name', 'date']
+    search_fields = ['user__username', 'movie__name']
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path(
+                'highest_commenter/',
+                self.admin_site.admin_view(self.comments_view),
+                name='movies_review_highest_commenter',
+            ),
+        ]
+        return custom_urls + urls
+
+    def comments_view(self, request):
+        highest_commenter = (
+            Review.objects.values("user__username")
+            .annotate(num_comments = Count('id'))
+            .order_by("-num_comments")
+            .first() 
+        )
+        context = dict(
+            self.admin_site.each_context(request),
+            title='Highest Commenter',
+            highest_commenter=highest_commenter,
+        )
+        return TemplateResponse(request, 'admin/comments.html', context)
 admin.site.register(Movie, MovieAdmin)
-admin.site.register(Review)
+admin.site.register(Review, ReviewAdmin)
+
+'''
+    
+    def comments_view(self, request):
+        highest_commenter = (
+            Review.objects.values("user__username")
+            .annotate(num_comments = Count("name"))
+            .order_by("-num_comments")
+            .first() 
+        )
+        context = dict(
+            self.admin_site.each_context(request),
+            title='Highest Commenter',
+            highest_commenter=highest_commenter,
+        )
+        return TemplateResponse(request, 'admin/comments.html', context)
+'''
