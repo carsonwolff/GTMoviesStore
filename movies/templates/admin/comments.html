@@ -1,0 +1,15 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<div id="content-main">
+  <div class="module">
+    <h2>Most Purchased Movie</h2>
+    {% if highest_commenter %}
+      <p><strong>User:</strong> {{ highest_commenter.user__username }}</p>
+      <p><strong>Comments:</strong> {{ highest_commenter.num_comments }}</p>
+    {% else %}
+      <p>No purchase data available.</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

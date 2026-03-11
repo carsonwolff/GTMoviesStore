@@ -52,6 +52,9 @@ coverage.xml
 *.mo
 *.pot
 
+#Images
+*.png
+
 # Django stuff:
 *.log
 local_settings.py
@@ -120,3 +123,4 @@ dmypy.json
 # OS
 .DS_Store
 Thumbs.db
+
